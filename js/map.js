@@ -28,24 +28,51 @@ function createMarker(place) {
 
 // Shows an google maps InfoWindow over the marker of the selected place
 function showPlaceInfo(place, marker) {
-  const placeInfo = place.rating ? Promise.resolve({rating: place.rating}) : getPlaceInfo(place.venueId);
   toggleBounce(marker);
   setTimeout(() => { toggleBounce(marker) }, 750);
-  placeInfo
-  .then((placeInfo) => placeInfo.rating )
-  .catch((error) => '<span class="error">Couldn\'t get rating</span>')
-  .then((rating) => {
-    rating = rating || '-';
-    place.rating = rating;
+
+  Promise.all([getRating(place), getAddress(place)])
+  .then(() => {
     const contentString = `
       <div>
         <h3>${marker.title}</h3>
-        <p>Rating: ${rating}</p>
+        <p>Rating: ${place.rating}</p>
+        <p>Address: ${place.address}</p>
         <p class="attribution">Powered by Foursquare</p>
       </div>
     `;
     infowindow.setContent(contentString);
     infowindow.open(map, marker);
+  });
+}
+
+function getRating(place) {
+  const placeInfo = place.rating && !place.rating.includes('class="error"') ?
+    Promise.resolve({rating: place.rating}) :
+    getPlaceInfo(place.venueId);
+
+  return placeInfo
+  .then((placeInfo) => {
+    const rating = String(placeInfo.rating) || '-';
+    place.rating = rating;
+  })
+  .catch((error) => {
+    place.rating = '<span class="error">Couldn\'t get rating</span>'
+  })
+}
+
+function getAddress(place) {
+  const addressInfo = place.address && !place.address.includes('class="error"') ?
+    Promise.resolve({results: [{ formatted_address: place.address }]}) :
+    getReverseGeocode(place.position);
+
+  return addressInfo
+  .then((geocodeInfo) => {
+    const address = geocodeInfo.results[0].formatted_address || '-';
+    place.address = address;
+  })
+  .catch((error) => {
+    place.address = '<span class="error">Couldn\'t get address</span>'
   });
 }
 
