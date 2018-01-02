@@ -1,0 +1,69 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+@media (max-width: 500px) {
+  body {
+    flex-direction: column;
+  }
+}
+
+#locations {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  min-width: 250px;
+  background: linear-gradient(rgba(0, 173, 255, 0.5), rgba(255, 0, 0, 0.5));
+}
+
+#locations h1 {
+  text-align: center;
+}
+
+#locations input {
+  border-width: 0;
+  padding: 5px;
+  border-radius: 10px;
+  outline: none;
+}
+
+#location-list {
+  padding: 5px;
+  list-style: none;
+  overflow: scroll;
+}
+
+.location {
+  margin: 5px;
+  padding: 7px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.location.selected {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.location:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.attribution {
+  margin-top: auto;
+  font-size: 10px;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+.error {
+  color: #f00;
+}
