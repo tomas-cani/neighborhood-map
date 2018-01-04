@@ -53,7 +53,7 @@ function getRating(place) {
 
   return placeInfo
   .then((placeInfo) => {
-    const rating = String(placeInfo.rating) || '-';
+    const rating = placeInfo.rating || '-';
     place.rating = rating;
   })
   .catch((error) => {
